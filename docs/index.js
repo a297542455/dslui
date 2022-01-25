@@ -2,6 +2,7 @@
 import { Layout } from '@'
 import commonform from './commonform'
 import commontable from './commontable'
+import dynamicseditor from './dynamics-editor'
 import guide from './guide/index.md'
 
 const dosc = (function() {
@@ -16,6 +17,12 @@ const dosc = (function() {
         name: 'commonform',
         component: commonform,
         meta: { title: '表单组件', icon: 'dashboard' }
+      },
+      {
+        path: 'dynamicseditor',
+        name: 'dynamicseditor',
+        component: dynamicseditor,
+        meta: { title: '可视化修改', icon: 'dashboard' }
       },
       {
         path: 'commontable',
