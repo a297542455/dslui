@@ -601,6 +601,8 @@
 
 <script>
 import { questionData } from './question'
+
+import { getMenuList } from '../../utils/auth'
 export default {
   name: 'CommonTable',
   props: {
@@ -612,7 +614,7 @@ export default {
     },
     resizable: {
       type: Boolean,
-      default: false },
+      default: true },
     defaultExpandAll: {
       type: Boolean,
       default: false
@@ -819,8 +821,23 @@ export default {
       callback(row)
     },
     handleDisabled(opts = {}, row = {}) {
-      const { disabled } = opts
-      return disabled instanceof Function ? disabled(row) : disabled
+      const { disabled, permission } = opts
+
+      const menuList = getMenuList()
+      const menu = menuList && menuList.length && menuList[0] || []
+      const isAllow = []
+      this.checkPermission(permission, menu, isAllow)
+      const isPermission = permission && isAllow.every(elm => !elm)
+
+      return disabled instanceof Function ? disabled(row) : (!!isPermission || disabled)
+    },
+    checkPermission(permission, menu, isAllow) {
+      if (menu.permissionList) {
+        for (const item of menu.permissionList) {
+          this.checkPermission(permission, item, isAllow)
+        }
+      }
+      isAllow.push(menu.descr === permission)
     },
     filterHandler(value, row, column) {
       const property = column['property']

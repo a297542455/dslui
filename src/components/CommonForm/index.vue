@@ -11,10 +11,10 @@
 <template>
   <el-form ref="form" class="commom-form" :disabled="disabled" :label-position="labelPosition" :label-width="labelWidth" :model="model" @keyup.enter.native="handlerenter">
     <el-row :gutter="33">
-      <el-col v-for="item of items" v-show="item.shows!==undefined?item.shows:true" :key="item.field" :span="item.span || 12" :offset="item.offset" :style="item.colstyle" :class="item.class">
+      <el-col v-for="item of showItems" v-show="item.shows!==undefined?item.shows:true" :key="item.field" :span="item.span || 12" :offset="item.offset" :style="item.colstyle" :class="item.class">
         <el-row :gutter="33">
 
-          <el-col v-show="!item.hide" :span="item.itemspan || 24">
+          <el-col :span="item.itemspan || 24">
             <el-form-item :class="item.showRequire && 'require-label'" :prop="item.field" :label="item.label" :label-width="item.labelWidth" :rules="disabled!==true?item.rules:null">
               <el-input
                 v-if="item.type === 'textarea'"
@@ -55,7 +55,7 @@
               </el-checkbox-group>
               <!-- switch按钮组 -->
               <el-switch v-else-if="item.type === 'switch'" v-model="model[item.field]" :disabled="item.disabled || disabled" @change="val => handler(item.onChange, val)" />
-              <el-input-number v-else-if="item.type === 'number'" v-model.trim="model[item.field]" :min="item.min" :max="item.max" :placeholder="getPlaceholder(item)" :disabled="item.disabled || disabled" :precision="item.precision" :step="item.step" @change="val => handler(item.change, val)" />
+              <el-input-number v-else-if="item.type === 'number'" v-model.trim="model[item.field]" :min="item.min" :max="item.max" :placeholder="getPlaceholder(item)" :disabled="item.disabled || disabled" :controls="item.controls" :precision="item.precision" :step="item.step" @change="val => handler(item.change, val)" />
               <el-cascader
                 v-else-if="item.type === 'cascader'"
                 v-model.trim="model[item.field]"
@@ -177,11 +177,11 @@
               <label v-if="item.tag" class="tag">{{ item.tag }}</label>
             </el-form-item>
           </el-col>
-          <el-col v-if="item.desc" v-show="!item.hide" class="desc" :span="item.descSpan || 12" :style="item.descstyle">
+          <el-col v-if="item.desc" class="desc" :span="item.descSpan || 12" :style="item.descstyle">
             <div class="desc-content" v-html="item.desc" />
           </el-col>
           <el-col v-if="item.backbtnText" class="desc" :span="item.descSpan || 12" :style="item.descstyle">
-            <el-button :type="item.buttonType || 'primary'" :icon="item.icon" @click="e => handler(item.backbtncClick, e)">{{ item.backbtnText }}</el-button>
+            <el-button :type="item.buttonType || 'primary'" :icon="item.icon" :disabled="false" @click="e => handler(item.backbtncClick, e)">{{ item.backbtnText }}</el-button>
           </el-col>
         </el-row>
       </el-col>
@@ -244,6 +244,12 @@ export default {
     }
   },
 
+  computed: {
+    showItems() {
+      return this.items.filter(item => !item.hide)
+    }
+  },
+
   mounted() {
     console.log('form.items=', this.items)
     console.log('form.model=', this.model)
@@ -284,6 +290,9 @@ export default {
         }
       }
 
+      if (Array.isArray($event)) {
+        tar = $event
+      }
       this.$refs.form.validateField(item.field, () => { })
       if (item.onChange) {
         item.onChange(item, tar)
