@@ -87,6 +87,7 @@
             >{{ getBtnText(x, scope.row) }}</el-button>
           </template>
           <template v-for="(x, i) of v.buttons" v-else-if="v.wordHide">
+
             <el-button
               v-if="
                 getBtnText(x, scope.row) && scope.row.agreeSupplyStatus == 1
@@ -832,12 +833,15 @@ export default {
       return disabled instanceof Function ? disabled(row) : (!!isPermission || disabled)
     },
     checkPermission(permission, menu, isAllow) {
-      if (menu.permissionList) {
-        for (const item of menu.permissionList) {
-          this.checkPermission(permission, item, isAllow)
+      // 权限检查暂定修改
+      if (menu) {
+        if (menu.permissionList) {
+          for (const item of menu.permissionList) {
+            this.checkPermission(permission, item, isAllow)
+          }
         }
+        isAllow.push(menu.descr === permission)
       }
-      isAllow.push(menu.descr === permission)
     },
     filterHandler(value, row, column) {
       const property = column['property']

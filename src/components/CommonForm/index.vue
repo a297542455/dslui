@@ -84,6 +84,7 @@
                 :field="item.field"
                 :range-separator="item.rangeSeparator"
                 :type="item.dateType"
+                :options="item.options"
                 :date-type="item.dateType"
                 :value-format="item.valueFormat"
                 :format="item.format"

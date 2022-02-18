@@ -141,13 +141,9 @@ export default {
           label: '活动中心',
           path: '/activityCenter/'
         }, {
-          value: 5,
-          label: '供应商中心',
-          path: '/supplierSystem/'
-        }, {
           value: 6,
           label: '直播中台',
-          path: '/supplierSystem/'
+          path: '/liveadmin/'
         }
       ]
     }
