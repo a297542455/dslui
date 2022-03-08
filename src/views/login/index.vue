@@ -51,7 +51,7 @@
 
       <el-form-item prop="tenantId">
 
-        <el-select v-model="loginForm.tenantId" class="tenant-select" size="small" placeholder="请选择对应的登录平台">
+        <el-select v-model="loginForm.tenantId" class="tenant-select" size="small" @change="tenantOptionsChange" placeholder="请选择对应的登录平台">
           <el-option v-for="(option, i) of tenantOptions" :key="i" :label="option.label" :value="option.value" />
         </el-select>
 
@@ -161,17 +161,20 @@ export default {
     let nowSystem = this.tenantOptions.find(o => {
       return (pathname.indexOf(o.path) !== -1)
     })
-    nowSystem = nowSystem || this.tenantOptions[0]
-    const tenantId = nowSystem.value
+    this.nowSystem = nowSystem || this.tenantOptions[0]
     // console.log('pathname', pathname)
     // console.log('nowSystem', nowSystem)
-    // console.log('tenantId', tenantId)
     this.loginForm = {
       ...this.loginForm,
-      tenantId
+      tenantId: this.nowSystem.value,
     }
   },
   methods: {
+    tenantOptionsChange(value){
+      this.nowSystem = this.tenantOptions.find(o => {
+        return o.value === value
+      })
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -189,11 +192,12 @@ export default {
           this.$store
             .dispatch('user/login', this.loginForm)
             .then(() => {
+              // console.log('this.nowSystem',this.nowSystem);
               this.$router.push({ path: '/' })
               this.loading = false
               this.$store.dispatch('user/setMenu').then(() => {
                 // console.log('getMenuList')
-                const selectPath = this.tenantOptions[this.loginForm.tenantId - 1].path
+                const selectPath = this.nowSystem.path
                 const { pathname } = location
                 this.$router.push({ path: '/' })
                 if (selectPath !== pathname) {
