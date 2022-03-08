@@ -1,6 +1,6 @@
 {
   "name": "dslui",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "大参林权限和综合组件库dslui，提供CommonForm、CommonTable等公共组件，改写整个项目layout",
   "main": "./src/index",
   "scripts": {
